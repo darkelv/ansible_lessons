@@ -81,7 +81,7 @@
         src: files/index.html
         dest: /usr/share/nginx/html/index.html
       become: yes
-      tags: nginx
+      tags: site
 
   handlers:
     - name: restart nginx

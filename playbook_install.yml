@@ -1,0 +1,62 @@
+- hosts: host
+  
+  tasks:
+    - name: update_cache
+      ansible.builtin.apt:
+        update_cache: yes
+      become: yes
+      tags: app
+
+    - name: install git
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+      become: yes
+      tags: app
+
+
+    - name: install make
+      ansible.builtin.apt:
+        name: make
+        state: present
+        update_cache: yes
+      become: yes
+      tags: app
+
+    - name: install node
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      become: yes
+      tags: app
+
+    - name: Create first_user
+      become: yes
+      ansible.builtin.user:
+        name: "{{ first_user }}"
+        password: "{{ first_password | password_hash('sha512') }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+      tags: user
+    - name: Create second_user
+      become: yes
+      ansible.builtin.user:
+        name: "{{ second_user }}"
+        password: "{{ second_password | password_hash('sha512') }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+      tags: user
+    - name: Create third_user
+      become: yes
+      ansible.builtin.user:
+        name: "{{ third_user }}"
+        password: "{{ third_password | password_hash('sha512') }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+      tags: user
+

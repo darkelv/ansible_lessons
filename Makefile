@@ -10,3 +10,5 @@ site:
 	ansible-playbook playbook_install.yml -i inventory.ini -u root -t site
 loop_users:
 	ansible-playbook playbook_install.yml -i inventory.ini -u root -t loop_users
+user_and_git:
+	ansible-playbook playbook_install_user_git.yml -i inventory.ini -u root

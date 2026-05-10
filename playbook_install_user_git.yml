@@ -1,0 +1,41 @@
+- hosts: all
+  vars:
+    user_name: best_name_in_world
+
+  tasks:
+    - name: Create
+      become: yes
+      ansible.builtin.user:
+        name: "{{ user_name }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: update git config
+      ansible.builtin.template:
+        src: templates/gitconfig_name.j2
+
+        dest: "/home/{{ user_name }}/.gitconfig"
+      become: yes
+
+    - name: Create ssh directory
+      ansible.builtin.file:
+        path: "/home/{{ user_name }}/.ssh/"
+        state: directory
+        owner: "{{ user_name }}"
+        mode: '0700'
+      become: yes
+
+    - name: copy ssh key
+      ansible.builtin.copy:
+        src: files/authorized_key.pub
+        dest: "/home/{{ user_name }}/.ssh/authorized_keys"
+        owner: "{{ user_name }}"
+        mode: '0600'
+
+    - name: install git
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+      become: yes

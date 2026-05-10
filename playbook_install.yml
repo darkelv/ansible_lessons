@@ -93,9 +93,9 @@
       tags: site
 
     - name: added index page
-      ansible.builtin.copy:
-        src: files/index.html
-        dest: "{{ root_dir }}"
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{ root_dir }}/index.html"
       become: yes
       tags: site
 

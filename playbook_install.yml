@@ -1,4 +1,9 @@
 - hosts: host
+
+  vars:
+    root_dir: /var/www/ansible_lessons
+    nginx_dir: /etc/nginx/
+    nginx_port: 2222
   
   tasks:
     - name: update_cache
@@ -67,19 +72,30 @@
       become: yes
       tags: nginx
 
+    - name: Create site directory
+      ansible.builtin.file:
+        path: "{{ root_dir }}"
+        state: directory
+        owner: root
+        group: www-data
+        mode: '0755'
+      become: yes
+      tags: site
+
     - name: update nginx config
-      ansible.builtin.copy:
-        src: files/nginx.conf
-        dest: /etc/nginx/nginx.conf
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+
+        dest: "{{ nginx_dir }}/nginx.conf"
       notify:
         - restart nginx
       become: yes
-      tags: nginx
+      tags: site
 
     - name: added index page
       ansible.builtin.copy:
         src: files/index.html
-        dest: /usr/share/nginx/html/index.html
+        dest: "{{ root_dir }}"
       become: yes
       tags: site
 

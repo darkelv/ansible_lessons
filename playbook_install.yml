@@ -4,7 +4,7 @@
     root_dir: /var/www/ansible_lessons
     nginx_dir: /etc/nginx/
     nginx_port: 2222
-    service_name: This is server web1!
+    service_name: "This is server {{ ansible_facts['hostname'] }}"
     deploy_date_time: >-
       {{
         ansible_date_time.weekday
@@ -40,6 +40,12 @@
       - robert
   
   tasks:
+    - name: Generate cowsay text
+      ansible.builtin.shell: cowsay -f turtle "{{ service_name }}"
+      register: what_the_cowsay
+      changed_when: false
+      tags: index
+
     - name: update_cache
       ansible.builtin.apt:
         update_cache: yes
@@ -102,6 +108,13 @@
     - name: install nginx
       ansible.builtin.apt:
         name: nginx
+        state: latest
+      become: yes
+      tags: nginx
+
+    - name: install nginx
+      ansible.builtin.apt:
+        name: cowsay
         state: latest
       become: yes
       tags: nginx

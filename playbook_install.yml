@@ -4,6 +4,10 @@
     root_dir: /var/www/ansible_lessons
     nginx_dir: /etc/nginx/
     nginx_port: 2222
+    users:
+      - jaime
+      - sansa
+      - robert
   
   tasks:
     - name: update_cache
@@ -98,6 +102,44 @@
         dest: "{{ root_dir }}/index.html"
       become: yes
       tags: site
+
+    - name: Create loop_users
+      become: yes
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+      loop: "{{ users }}"
+      tags: loop_users
+
+    - name: update git config
+      ansible.builtin.template:
+        src: templates/gitconfig.j2
+
+        dest: "/home/{{ item }}/.gitconfig"
+      loop: "{{ users }}"
+      become: yes
+      tags: loop_users
+
+    - name: Create ssh directory
+      ansible.builtin.file:
+        path: "/home/{{ item }}/.ssh/"
+        state: directory
+        owner: "{{ item }}"
+        mode: '0700'
+      become: yes
+      loop: "{{ users }}"
+      tags: loop_users
+
+    - name: copy ssh key
+      ansible.builtin.copy:
+        src: files/authorized_key.pub
+        dest: "/home/{{ item }}/.ssh/authorized_keys"
+        owner: "{{ item }}"
+        mode: '0600'
+      loop: "{{ users }}"
+      tags: loop_users
 
   handlers:
     - name: restart nginx

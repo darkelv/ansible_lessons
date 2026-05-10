@@ -4,6 +4,36 @@
     root_dir: /var/www/ansible_lessons
     nginx_dir: /etc/nginx/
     nginx_port: 2222
+    service_name: This is server web1!
+    deploy_date_time: >-
+      {{
+        ansible_date_time.weekday
+        | replace('Monday', 'Пн')
+        | replace('Tuesday', 'Вт')
+        | replace('Wednesday', 'Ср')
+        | replace('Thursday', 'Чт')
+        | replace('Friday', 'Пт')
+        | replace('Saturday', 'Сб')
+        | replace('Sunday', 'Вс')
+      }}
+      {{ ansible_date_time.day }}
+      {{
+        ansible_date_time.month
+        | replace('01', 'янв')
+        | replace('02', 'фев')
+        | replace('03', 'мар')
+        | replace('04', 'апр')
+        | replace('05', 'май')
+        | replace('06', 'июн')
+        | replace('07', 'июл')
+        | replace('08', 'авг')
+        | replace('09', 'сен')
+        | replace('10', 'окт')
+        | replace('11', 'ноя')
+        | replace('12', 'дек')
+      }}
+      {{ ansible_date_time.year }}
+      {{ ansible_date_time.time }}
     users:
       - jaime
       - sansa
@@ -101,7 +131,7 @@
         src: templates/index.html.j2
         dest: "{{ root_dir }}/index.html"
       become: yes
-      tags: site
+      tags: [site, index]
 
     - name: Create loop_users
       become: yes

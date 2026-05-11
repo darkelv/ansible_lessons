@@ -1,0 +1,57 @@
+- hosts: host
+  vars:
+    rbenv:
+      env: user
+      default_ruby: 3.2.2
+      rubies:
+        - version: 3.2.2
+
+  roles:
+    - geerlingguy.nodejs
+
+  tasks:
+    - name: Update apt cache
+      become: yes
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install packages
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - git
+          - postgresql
+        state: present
+
+    - name: Create user_app
+      become: yes
+      ansible.builtin.user:
+        name: user_app
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: Install rbenv and Ruby for user_app
+      ansible.builtin.include_role:
+        name: zzet.rbenv
+      vars:
+        rbenv_users:
+          - user_app
+
+    - name: Create .ssh directory for user_app
+      become: yes
+      ansible.builtin.file:
+        path: /home/user_app/.ssh
+        state: directory
+        owner: user_app
+        group: user_app
+        mode: '0700'
+
+    - name: Add SSH public key for user_app
+      become: yes
+      ansible.builtin.copy:
+        src: files/authorized_key.pub
+        dest: /home/user_app/.ssh/authorized_keys
+        owner: user_app
+        group: user_app
+        mode: '0600'

@@ -14,3 +14,5 @@ user_and_git:
 	ansible-playbook playbook_install_user_git.yml -i inventory.ini -u root
 index:
 	ansible-playbook playbook_install.yml -i inventory.ini -u root -t index
+lesson_13:
+	ansible-playbook lesson_13.yml -i inventory.ini -u root

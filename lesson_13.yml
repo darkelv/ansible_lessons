@@ -2,9 +2,12 @@
   vars:
     rbenv:
       env: user
+      version: v1.3.2
       default_ruby: 3.2.2
       rubies:
         - version: 3.2.2
+    rbenv_extra_depends:
+      - libyaml-dev
 
   roles:
     - geerlingguy.nodejs

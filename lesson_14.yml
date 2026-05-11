@@ -1,0 +1,27 @@
+- hosts: host
+  vars:
+    managed_users:
+      - name: "{{ first_user }}"
+        password: "{{ first_password }}"
+      - name: "{{ second_user }}"
+        password: "{{ second_password }}"
+      - name: "{{ third_user }}"
+        password: "{{ third_password }}"
+
+  tasks:
+    - name: Install git
+      become: yes
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Configure managed users
+      ansible.builtin.include_role:
+        name: user_environment
+      vars:
+        user_name: "{{ item.name }}"
+        user_password: "{{ item.password }}"
+      loop: "{{ managed_users }}"
+      loop_control:
+        label: "{{ item.name }}"

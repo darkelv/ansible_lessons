@@ -16,3 +16,5 @@ index:
 	ansible-playbook playbook_install.yml -i inventory.ini -u root -t index
 lesson_13:
 	ansible-playbook lesson_13.yml -i inventory.ini -u root
+lesson_14:
+	ansible-playbook --check lesson_14.yml -i inventory.ini -u root
